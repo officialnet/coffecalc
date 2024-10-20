@@ -6,103 +6,98 @@
     <title>حاسبة القهوة V60</title>
     <meta name="description" content="حاسبة معايير القهوة V60 لتحضير أفضل فنجان قهوة.">
     <meta name="keywords" content="قهوة, حاسبة القهوة, V60, تحضير القهوة, نسب القهوة">
-    <!-- إضافة خط عربي لتحسين المظهر -->
+    <!-- إضافة خطوط لتحسين المظهر -->
     <link href="https://fonts.googleapis.com/css?family=Cairo&display=swap" rel="stylesheet">
+    <!-- أيقونات -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
         body {
             font-family: 'Cairo', sans-serif;
-            text-align: center;
-            background-color: #fafafa;
+            background-color: #f4f7f9;
             margin: 0;
             padding: 0;
             direction: rtl;
+            color: #333;
         }
         .container {
-            max-width: 600px;
+            max-width: 700px;
             margin: 50px auto;
             background-color: #fff;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            padding: 40px 30px;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
         }
         h1 {
-            color: #333;
-            font-size: 28px;
-            margin-bottom: 20px;
+            color: #007bff;
+            font-size: 32px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 25px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
         }
         label {
-            display: block;
-            margin: 10px auto 5px;
             font-weight: bold;
-            color: #333;
-            text-align: right;
-            max-width: 320px;
+            margin-bottom: 8px;
         }
         input, select {
             padding: 12px;
-            margin: 5px auto 15px;
             font-size: 16px;
-            width: 90%;
-            max-width: 320px;
+            width: 100%;
+            max-width: 400px;
             border: 1px solid #ccc;
-            border-radius: 5px;
-            text-align: right;
-            display: block;
-            background-color: #f9f9f9;
+            border-radius: 6px;
+            background-color: #fafafa;
+            transition: all 0.3s ease;
         }
         input:focus, select:focus {
-            outline: none;
             border-color: #007bff;
-            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
             background-color: #fff;
+            box-shadow: 0 0 8px rgba(0, 123, 255, 0.2);
+            outline: none;
         }
-        .result {
+        .result, .instructions {
+            margin-top: 30px;
+            text-align: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
             margin-top: 20px;
-            font-size: 18px;
-            color: #555;
-            border-top: 1px solid #ddd;
-            padding-top: 20px;
-            text-align: right;
         }
-        .result p {
-            margin: 0;
+        th, td {
+            padding: 14px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+        th {
+            background-color: #007bff;
+            color: #fff;
             font-weight: bold;
-            color: #333;
         }
-        .instructions {
-            font-size: 16px;
-            margin-top: 10px;
-            text-align: right;
-            max-width: 400px;
-            margin: 20px auto;
-            color: #333;
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
         }
-        .instructions p {
-            margin: 8px 0;
-            font-weight: normal;
-        }
-        .instructions span {
-            font-weight: bold;
-            color: #007bff;
-        }
-        /* تصميم متجاوب */
-        @media (max-width: 600px) {
-            body {
-                padding: 10px;
-            }
+        /* تحسين التصميم لجعله متجاوبًا */
+        @media (max-width: 768px) {
             .container {
                 margin: 20px auto;
-                padding: 20px;
+                padding: 30px 20px;
             }
             h1 {
-                font-size: 24px;
+                font-size: 28px;
             }
             input, select {
-                width: 100%;
-                max-width: none;
+                max-width: 100%;
+            }
+            .form-group {
+                align-items: stretch;
             }
             label {
-                max-width: none;
+                text-align: right;
             }
         }
     </style>
@@ -112,27 +107,33 @@
         <h1>حاسبة معايير القهوة V60</h1>
         
         <!-- إدخال كمية البن -->
-        <label for="coffeeAmount">كمية البن (جرام):</label>
-        <input type="number" id="coffeeAmount" placeholder="أدخل كمية البن">
+        <div class="form-group">
+            <label for="coffeeAmount">كمية البن (جرام):</label>
+            <input type="number" id="coffeeAmount" placeholder="أدخل كمية البن">
+        </div>
 
         <!-- اختيار النسبة (ريشو) -->
-        <label for="ratio">اختر النسبة (ريشو):</label>
-        <select id="ratio">
-            <option value="15">1:15 (الافتراضي)</option>
-            <option value="16">1:16</option>
-            <option value="17">1:17</option>
-            <option value="18">1:18</option>
-            <option value="19">1:19</option>
-            <option value="20">1:20</option>
-            <option value="custom">مخصص</option>
-        </select>
+        <div class="form-group">
+            <label for="ratio">اختر النسبة (ريشو):</label>
+            <select id="ratio">
+                <option value="15">1:15 (الافتراضي)</option>
+                <option value="16">1:16</option>
+                <option value="17">1:17</option>
+                <option value="18">1:18</option>
+                <option value="19">1:19</option>
+                <option value="20">1:20</option>
+                <option value="custom">مخصص</option>
+            </select>
+        </div>
 
         <!-- اختيار نوع القهوة -->
-        <label for="type">نوع القهوة:</label>
-        <select id="type">
-            <option value="hot">قهوة حارة</option>
-            <option value="iced">قهوة باردة</option>
-        </select>
+        <div class="form-group">
+            <label for="type">نوع القهوة:</label>
+            <select id="type">
+                <option value="hot">قهوة حارة</option>
+                <option value="iced">قهوة باردة</option>
+            </select>
+        </div>
 
         <!-- عرض النتائج -->
         <div class="result" id="result"></div>
@@ -176,12 +177,38 @@
             }
 
             const waterAmount = coffeeAmount * ratio; // حساب كمية الماء
-            let resultText = `<p>الماء المطلوب: ${waterAmount.toFixed(2)} مل</p>`;
+            let resultText = `
+                <table>
+                    <tr>
+                        <th>البند</th>
+                        <th>الكمية</th>
+                    </tr>
+                    <tr>
+                        <td>الماء المطلوب</td>
+                        <td>${waterAmount.toFixed(2)} مل</td>
+                    </tr>
+                </table>
+            `;
             
             if (type === "iced") {
                 const iceAmount = waterAmount / 2; // نصف الماء سيكون ثلجًا
                 const waterForIced = waterAmount / 2; // نصف كمية الماء للصب
-                resultText = `<p>الماء المطلوب: ${waterForIced.toFixed(2)} مل</p><p>الثلج المطلوب: ${iceAmount.toFixed(2)} جرام</p>`;
+                resultText = `
+                    <table>
+                        <tr>
+                            <th>البند</th>
+                            <th>الكمية</th>
+                        </tr>
+                        <tr>
+                            <td>الماء المطلوب</td>
+                            <td>${waterForIced.toFixed(2)} مل</td>
+                        </tr>
+                        <tr>
+                            <td>الثلج المطلوب</td>
+                            <td>${iceAmount.toFixed(2)} جرام</td>
+                        </tr>
+                    </table>
+                `;
             }
 
             resultElement.innerHTML = resultText;
@@ -193,14 +220,29 @@
             const secondPour = remainingWater / 2;
             const thirdPour = remainingWater - secondPour;
 
-            const totalSecond = bloomAmount + secondPour;
-            const totalThird = totalSecond + thirdPour;
-
             const pourInstructions = `
-                <p><strong>إرشادات الصب:</strong></p>
-                <p>1. صب <span>${bloomAmount.toFixed(2)}</span> مل لترطيب القهوة (أول صبة). المجموع: <span>${bloomAmount.toFixed(2)}</span> مل.</p>
-                <p>2. صب <span>${secondPour.toFixed(2)}</span> مل في الصبة الثانية. المجموع: <span>${totalSecond.toFixed(2)}</span> مل.</p>
-                <p>3. صب <span>${thirdPour.toFixed(2)}</span> مل في الصبة الثالثة. المجموع: <span>${totalThird.toFixed(2)}</span> مل.</p>
+                <table>
+                    <tr>
+                        <th>الخطوة</th>
+                        <th>الكمية (مل)</th>
+                        <th>المجموع (مل)</th>
+                    </tr>
+                    <tr>
+                        <td>الترطيب (الصبة الأولى)</td>
+                        <td>${bloomAmount.toFixed(2)}</td>
+                        <td>${bloomAmount.toFixed(2)}</td>
+                    </tr>
+                    <tr>
+                        <td>الصبة الثانية</td>
+                        <td>${secondPour.toFixed(2)}</td>
+                        <td>${(bloomAmount + secondPour).toFixed(2)}</td>
+                    </tr>
+                    <tr>
+                        <td>الصبة الثالثة</td>
+                        <td>${thirdPour.toFixed(2)}</td>
+                        <td>${(bloomAmount + secondPour + thirdPour).toFixed(2)}</td>
+                    </tr>
+                </table>
             `;
 
             pourInstructionsElement.innerHTML = pourInstructions;
