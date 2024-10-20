@@ -6,28 +6,56 @@
     <title>حاسبة القهوة V60</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             text-align: center;
+            background-color: #f4f4f4;
             margin: 0;
-            padding: 20px;
+            padding: 0;
         }
         .container {
             max-width: 600px;
-            margin: auto;
+            margin: 50px auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
-        input {
+        h1 {
+            color: #333;
+        }
+        input, select {
             padding: 10px;
             margin: 10px;
             font-size: 16px;
+            width: 80%;
+            max-width: 300px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
         }
         button {
             padding: 10px 20px;
             font-size: 16px;
+            color: white;
+            background-color: #28a745;
+            border: none;
+            border-radius: 5px;
             cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #218838;
         }
         .result {
             margin-top: 20px;
             font-size: 18px;
+            color: #555;
+            border-top: 1px solid #ddd;
+            padding-top: 20px;
+        }
+        .result p {
+            margin: 0;
+            font-weight: bold;
             color: #333;
         }
     </style>
@@ -35,17 +63,31 @@
 <body>
     <div class="container">
         <h1>حاسبة معايير القهوة V60</h1>
+
+        <!-- إدخال كمية البن -->
         <label for="coffeeAmount">كمية البن (جرام):</label><br>
         <input type="number" id="coffeeAmount" placeholder="أدخل كمية البن"><br>
-        
+
+        <!-- اختيار نوع القهوة (حارة أو باردة) -->
         <label for="type">نوع القهوة:</label><br>
         <select id="type">
             <option value="hot">قهوة حارة</option>
             <option value="iced">قهوة باردة</option>
         </select><br>
 
+        <!-- اختيار عدد الصبات -->
+        <label for="servings">عدد الصبات:</label><br>
+        <select id="servings">
+            <option value="1">1 صبة</option>
+            <option value="2">2 صبات</option>
+            <option value="3">3 صبات</option>
+            <option value="4">4 صبات</option>
+        </select><br>
+
+        <!-- زر الحساب -->
         <button onclick="calculate()">احسب</button>
-        
+
+        <!-- عرض النتائج -->
         <div class="result" id="result"></div>
     </div>
 
@@ -53,22 +95,26 @@
         function calculate() {
             const coffeeAmount = document.getElementById("coffeeAmount").value;
             const type = document.getElementById("type").value;
+            const servings = document.getElementById("servings").value;
 
             if (coffeeAmount === "") {
-                document.getElementById("result").innerHTML = "الرجاء إدخال كمية البن.";
+                document.getElementById("result").innerHTML = "<p>الرجاء إدخال كمية البن.</p>";
                 return;
             }
 
-            let waterAmount, iceAmount;
+            const ratio = 15; // النسبة القياسية 1:15
+            let totalCoffeeAmount = coffeeAmount * servings; // حساب كمية البن المطلوبة لجميع الصبات
+            let waterAmount = totalCoffeeAmount * ratio; // حساب كمية الماء
+
+            let resultText = `<p>الماء المطلوب: ${waterAmount.toFixed(2)} مل</p>`;
             
-            if (type === "hot") {
-                waterAmount = coffeeAmount * 16;
-                document.getElementById("result").innerHTML = `الماء المطلوب: ${waterAmount.toFixed(2)} مل`;
-            } else if (type === "iced") {
-                waterAmount = coffeeAmount * 8;  // نصف كمية الماء
-                iceAmount = coffeeAmount * 8;    // النصف الآخر من الثلج
-                document.getElementById("result").innerHTML = `الماء المطلوب: ${waterAmount.toFixed(2)} مل <br> الثلج المطلوب: ${iceAmount.toFixed(2)} جرام`;
+            if (type === "iced") {
+                let iceAmount = totalCoffeeAmount * (ratio / 2); // حساب كمية الثلج
+                waterAmount /= 2; // نصف الماء
+                resultText += `<p>الماء المطلوب: ${waterAmount.toFixed(2)} مل <br> الثلج المطلوب: ${iceAmount.toFixed(2)} جرام</p>`;
             }
+
+            document.getElementById("result").innerHTML = resultText;
         }
     </script>
 </body>
