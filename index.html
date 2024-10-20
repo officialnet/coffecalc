@@ -53,6 +53,14 @@
             max-width: 400px;
             margin: auto;
         }
+        .instructions p {
+            margin: 8px 0;
+            font-weight: normal;
+        }
+        .instructions span {
+            font-weight: bold;
+            color: #007bff;
+        }
     </style>
 </head>
 <body>
@@ -114,13 +122,17 @@
             // إرشادات الصب:
             const bloomAmount = coffeeAmount * 2; // الترطيب = ضعف كمية البن
             const remainingWater = waterAmount - bloomAmount; // الماء المتبقي بعد الترطيب
-            const secondAndThirdPour = remainingWater / 2; // يتم تقسيم الماء المتبقي على الصبتين الثانية والثالثة
+            const secondPour = Math.floor(remainingWater / 2); // الصبة الثانية عدد صحيح
+            const thirdPour = remainingWater - secondPour; // الصبة الثالثة تكملة الفارق
+
+            const totalSecond = bloomAmount + secondPour;
+            const totalThird = totalSecond + thirdPour;
 
             const pourInstructions = `
                 <p><strong>إرشادات الصب:</strong></p>
-                <p>1. صب ${bloomAmount.toFixed(2)} مل لترطيب القهوة (أول صبة).</p>
-                <p>2. صب ${secondAndThirdPour.toFixed(2)} مل في الصبة الثانية.</p>
-                <p>3. صب ${secondAndThirdPour.toFixed(2)} مل في الصبة الثالثة.</p>
+                <p>1. صب <span>${bloomAmount.toFixed(2)}</span> مل لترطيب القهوة (أول صبة). المجموع: <span>${bloomAmount.toFixed(2)}</span> مل.</p>
+                <p>2. صب <span>${secondPour}</span> مل في الصبة الثانية. المجموع: <span>${totalSecond}</span> مل.</p>
+                <p>3. صب <span>${thirdPour.toFixed(2)}</span> مل في الصبة الثالثة. المجموع: <span>${totalThird.toFixed(2)}</span> مل.</p>
             `;
 
             document.getElementById("pourInstructions").innerHTML = pourInstructions;
