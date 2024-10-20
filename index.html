@@ -8,7 +8,7 @@
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             text-align: center;
-            background-color: #f4f4f4;
+            background-color: #f0f0f5;
             margin: 0;
             padding: 0;
         }
@@ -16,20 +16,21 @@
             max-width: 600px;
             margin: 50px auto;
             background-color: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
         h1 {
             color: #333;
+            font-size: 28px;
         }
         input, select {
-            padding: 10px;
+            padding: 12px;
             margin: 10px;
             font-size: 16px;
-            width: 80%;
-            max-width: 300px;
-            border: 2px solid #ddd;
+            width: 90%;
+            max-width: 320px;
+            border: 1px solid #ccc;
             border-radius: 5px;
             box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
         }
@@ -44,6 +45,13 @@
             margin: 0;
             font-weight: bold;
             color: #333;
+        }
+        .instructions {
+            font-size: 16px;
+            margin-top: 10px;
+            text-align: left;
+            max-width: 400px;
+            margin: auto;
         }
     </style>
 </head>
@@ -77,7 +85,7 @@
         <div class="result" id="result"></div>
 
         <!-- إرشادات الصب -->
-        <div class="result" id="pourInstructions"></div>
+        <div class="instructions" id="pourInstructions"></div>
     </div>
 
     <script>
@@ -97,7 +105,8 @@
             
             if (type === "iced") {
                 const iceAmount = waterAmount / 2; // نصف الماء سيكون ثلجًا
-                resultText += `<p>الثلج المطلوب: ${iceAmount.toFixed(2)} جرام</p>`;
+                const waterForIced = waterAmount / 2; // نصف كمية الماء للصب
+                resultText = `<p>الماء المطلوب: ${waterForIced.toFixed(2)} مل</p><p>الثلج المطلوب: ${iceAmount.toFixed(2)} جرام</p>`;
             }
 
             document.getElementById("result").innerHTML = resultText;
@@ -108,7 +117,7 @@
             const secondAndThirdPour = remainingWater / 2; // يتم تقسيم الماء المتبقي على الصبتين الثانية والثالثة
 
             const pourInstructions = `
-                <p>إرشادات الصب:</p>
+                <p><strong>إرشادات الصب:</strong></p>
                 <p>1. صب ${bloomAmount.toFixed(2)} مل لترطيب القهوة (أول صبة).</p>
                 <p>2. صب ${secondAndThirdPour.toFixed(2)} مل في الصبة الثانية.</p>
                 <p>3. صب ${secondAndThirdPour.toFixed(2)} مل في الصبة الثالثة.</p>
