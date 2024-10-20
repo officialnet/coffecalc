@@ -1,38 +1,60 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>حاسبة القهوة V60</title>
+    <meta name="description" content="حاسبة معايير القهوة V60 لتحضير أفضل فنجان قهوة.">
+    <meta name="keywords" content="قهوة, حاسبة القهوة, V60, تحضير القهوة, نسب القهوة">
+    <!-- إضافة خط عربي لتحسين المظهر -->
+    <link href="https://fonts.googleapis.com/css?family=Cairo&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Cairo', sans-serif;
             text-align: center;
-            background-color: #f0f0f5;
+            background-color: #fafafa;
             margin: 0;
             padding: 0;
+            direction: rtl;
         }
         .container {
             max-width: 600px;
             margin: 50px auto;
-            background-color: white;
+            background-color: #fff;
             padding: 30px;
             border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
         }
         h1 {
             color: #333;
             font-size: 28px;
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin: 10px auto 5px;
+            font-weight: bold;
+            color: #333;
+            text-align: right;
+            max-width: 320px;
         }
         input, select {
             padding: 12px;
-            margin: 10px;
+            margin: 5px auto 15px;
             font-size: 16px;
             width: 90%;
             max-width: 320px;
             border: 1px solid #ccc;
             border-radius: 5px;
-            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+            text-align: right;
+            display: block;
+            background-color: #f9f9f9;
+        }
+        input:focus, select:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+            background-color: #fff;
         }
         .result {
             margin-top: 20px;
@@ -40,6 +62,7 @@
             color: #555;
             border-top: 1px solid #ddd;
             padding-top: 20px;
+            text-align: right;
         }
         .result p {
             margin: 0;
@@ -49,9 +72,10 @@
         .instructions {
             font-size: 16px;
             margin-top: 10px;
-            text-align: left;
+            text-align: right;
             max-width: 400px;
-            margin: auto;
+            margin: 20px auto;
+            color: #333;
         }
         .instructions p {
             margin: 8px 0;
@@ -61,6 +85,26 @@
             font-weight: bold;
             color: #007bff;
         }
+        /* تصميم متجاوب */
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+            .container {
+                margin: 20px auto;
+                padding: 20px;
+            }
+            h1 {
+                font-size: 24px;
+            }
+            input, select {
+                width: 100%;
+                max-width: none;
+            }
+            label {
+                max-width: none;
+            }
+        }
     </style>
 </head>
 <body>
@@ -68,26 +112,27 @@
         <h1>حاسبة معايير القهوة V60</h1>
         
         <!-- إدخال كمية البن -->
-        <label for="coffeeAmount">كمية البن (جرام):</label><br>
-        <input type="number" id="coffeeAmount" placeholder="أدخل كمية البن" oninput="calculate()"><br>
+        <label for="coffeeAmount">كمية البن (جرام):</label>
+        <input type="number" id="coffeeAmount" placeholder="أدخل كمية البن">
 
-        <!-- اختيار الريشو -->
-        <label for="ratio">اختر الريشو:</label><br>
-        <select id="ratio" onchange="calculate()">
+        <!-- اختيار النسبة (ريشو) -->
+        <label for="ratio">اختر النسبة (ريشو):</label>
+        <select id="ratio">
             <option value="15">1:15 (الافتراضي)</option>
             <option value="16">1:16</option>
             <option value="17">1:17</option>
             <option value="18">1:18</option>
             <option value="19">1:19</option>
             <option value="20">1:20</option>
-        </select><br>
+            <option value="custom">مخصص</option>
+        </select>
 
         <!-- اختيار نوع القهوة -->
-        <label for="type">نوع القهوة:</label><br>
-        <select id="type" onchange="calculate()">
+        <label for="type">نوع القهوة:</label>
+        <select id="type">
             <option value="hot">قهوة حارة</option>
             <option value="iced">قهوة باردة</option>
-        </select><br>
+        </select>
 
         <!-- عرض النتائج -->
         <div class="result" id="result"></div>
@@ -97,15 +142,37 @@
     </div>
 
     <script>
-        function calculate() {
-            const coffeeAmount = document.getElementById("coffeeAmount").value;
-            const ratio = document.getElementById("ratio").value;
-            const type = document.getElementById("type").value;
+        // تخزين المراجع لعناصر DOM
+        const coffeeAmountInput = document.getElementById('coffeeAmount');
+        const ratioSelect = document.getElementById('ratio');
+        const typeSelect = document.getElementById('type');
+        const resultElement = document.getElementById('result');
+        const pourInstructionsElement = document.getElementById('pourInstructions');
 
-            if (coffeeAmount === "") {
-                document.getElementById("result").innerHTML = "<p>الرجاء إدخال كمية البن.</p>";
-                document.getElementById("pourInstructions").innerHTML = "";
+        // إضافة مستمعي الأحداث
+        coffeeAmountInput.addEventListener('input', calculate);
+        ratioSelect.addEventListener('change', calculate);
+        typeSelect.addEventListener('change', calculate);
+
+        function calculate() {
+            let coffeeAmount = parseFloat(coffeeAmountInput.value);
+            let ratio = ratioSelect.value;
+            const type = typeSelect.value;
+
+            if (isNaN(coffeeAmount) || coffeeAmount <= 0) {
+                resultElement.innerHTML = "<p>الرجاء إدخال كمية بن صالحة.</p>";
+                pourInstructionsElement.innerHTML = "";
                 return;
+            }
+
+            if (ratio === "custom") {
+                ratio = parseFloat(prompt("أدخل النسبة المخصصة (مثال: 15):"));
+                if (isNaN(ratio) || ratio <= 0) {
+                    alert("الرجاء إدخال نسبة صالحة.");
+                    return;
+                }
+            } else {
+                ratio = parseFloat(ratio);
             }
 
             const waterAmount = coffeeAmount * ratio; // حساب كمية الماء
@@ -117,13 +184,14 @@
                 resultText = `<p>الماء المطلوب: ${waterForIced.toFixed(2)} مل</p><p>الثلج المطلوب: ${iceAmount.toFixed(2)} جرام</p>`;
             }
 
-            document.getElementById("result").innerHTML = resultText;
+            resultElement.innerHTML = resultText;
 
             // إرشادات الصب:
+            const totalWater = type === "iced" ? waterAmount / 2 : waterAmount;
             const bloomAmount = coffeeAmount * 2; // الترطيب = ضعف كمية البن
-            const remainingWater = waterAmount - bloomAmount; // الماء المتبقي بعد الترطيب
-            const secondPour = Math.floor(remainingWater / 2); // الصبة الثانية عدد صحيح
-            const thirdPour = remainingWater - secondPour; // الصبة الثالثة تكملة الفارق
+            const remainingWater = totalWater - bloomAmount; // الماء المتبقي بعد الترطيب
+            const secondPour = remainingWater / 2;
+            const thirdPour = remainingWater - secondPour;
 
             const totalSecond = bloomAmount + secondPour;
             const totalThird = totalSecond + thirdPour;
@@ -131,11 +199,11 @@
             const pourInstructions = `
                 <p><strong>إرشادات الصب:</strong></p>
                 <p>1. صب <span>${bloomAmount.toFixed(2)}</span> مل لترطيب القهوة (أول صبة). المجموع: <span>${bloomAmount.toFixed(2)}</span> مل.</p>
-                <p>2. صب <span>${secondPour}</span> مل في الصبة الثانية. المجموع: <span>${totalSecond}</span> مل.</p>
+                <p>2. صب <span>${secondPour.toFixed(2)}</span> مل في الصبة الثانية. المجموع: <span>${totalSecond.toFixed(2)}</span> مل.</p>
                 <p>3. صب <span>${thirdPour.toFixed(2)}</span> مل في الصبة الثالثة. المجموع: <span>${totalThird.toFixed(2)}</span> مل.</p>
             `;
 
-            document.getElementById("pourInstructions").innerHTML = pourInstructions;
+            pourInstructionsElement.innerHTML = pourInstructions;
         }
     </script>
 </body>
