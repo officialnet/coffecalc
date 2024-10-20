@@ -33,19 +33,6 @@
             border-radius: 5px;
             box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
         }
-        button {
-            padding: 10px 20px;
-            font-size: 16px;
-            color: white;
-            background-color: #28a745;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        button:hover {
-            background-color: #218838;
-        }
         .result {
             margin-top: 20px;
             font-size: 18px;
@@ -63,58 +50,71 @@
 <body>
     <div class="container">
         <h1>حاسبة معايير القهوة V60</h1>
-
+        
         <!-- إدخال كمية البن -->
         <label for="coffeeAmount">كمية البن (جرام):</label><br>
-        <input type="number" id="coffeeAmount" placeholder="أدخل كمية البن"><br>
+        <input type="number" id="coffeeAmount" placeholder="أدخل كمية البن" oninput="calculate()"><br>
 
-        <!-- اختيار نوع القهوة (حارة أو باردة) -->
+        <!-- اختيار الريشو -->
+        <label for="ratio">اختر الريشو:</label><br>
+        <select id="ratio" onchange="calculate()">
+            <option value="15">1:15 (الافتراضي)</option>
+            <option value="16">1:16</option>
+            <option value="17">1:17</option>
+            <option value="18">1:18</option>
+            <option value="19">1:19</option>
+            <option value="20">1:20</option>
+        </select><br>
+
+        <!-- اختيار نوع القهوة -->
         <label for="type">نوع القهوة:</label><br>
-        <select id="type">
+        <select id="type" onchange="calculate()">
             <option value="hot">قهوة حارة</option>
             <option value="iced">قهوة باردة</option>
         </select><br>
 
-        <!-- اختيار عدد الصبات -->
-        <label for="servings">عدد الصبات:</label><br>
-        <select id="servings">
-            <option value="1">1 صبة</option>
-            <option value="2">2 صبات</option>
-            <option value="3">3 صبات</option>
-            <option value="4">4 صبات</option>
-        </select><br>
-
-        <!-- زر الحساب -->
-        <button onclick="calculate()">احسب</button>
-
         <!-- عرض النتائج -->
         <div class="result" id="result"></div>
+
+        <!-- إرشادات الصب -->
+        <div class="result" id="pourInstructions"></div>
     </div>
 
     <script>
         function calculate() {
             const coffeeAmount = document.getElementById("coffeeAmount").value;
+            const ratio = document.getElementById("ratio").value;
             const type = document.getElementById("type").value;
-            const servings = document.getElementById("servings").value;
 
             if (coffeeAmount === "") {
                 document.getElementById("result").innerHTML = "<p>الرجاء إدخال كمية البن.</p>";
+                document.getElementById("pourInstructions").innerHTML = "";
                 return;
             }
 
-            const ratio = 15; // النسبة القياسية 1:15
-            let totalCoffeeAmount = coffeeAmount * servings; // حساب كمية البن المطلوبة لجميع الصبات
-            let waterAmount = totalCoffeeAmount * ratio; // حساب كمية الماء
-
+            const waterAmount = coffeeAmount * ratio; // حساب كمية الماء
             let resultText = `<p>الماء المطلوب: ${waterAmount.toFixed(2)} مل</p>`;
             
             if (type === "iced") {
-                let iceAmount = totalCoffeeAmount * (ratio / 2); // حساب كمية الثلج
-                waterAmount /= 2; // نصف الماء
-                resultText += `<p>الماء المطلوب: ${waterAmount.toFixed(2)} مل <br> الثلج المطلوب: ${iceAmount.toFixed(2)} جرام</p>`;
+                const iceAmount = waterAmount / 2; // نصف الماء سيكون ثلجًا
+                resultText += `<p>الثلج المطلوب: ${iceAmount.toFixed(2)} جرام</p>`;
             }
 
             document.getElementById("result").innerHTML = resultText;
+
+            // إرشادات الصب:
+            const bloomAmount = coffeeAmount * 2; // الترطيب = ضعف كمية البن
+            const remainingWater = waterAmount - bloomAmount; // الماء المتبقي بعد الترطيب
+            const secondAndThirdPour = remainingWater / 2; // يتم تقسيم الماء المتبقي على الصبتين الثانية والثالثة
+
+            const pourInstructions = `
+                <p>إرشادات الصب:</p>
+                <p>1. صب ${bloomAmount.toFixed(2)} مل لترطيب القهوة (أول صبة).</p>
+                <p>2. صب ${secondAndThirdPour.toFixed(2)} مل في الصبة الثانية.</p>
+                <p>3. صب ${secondAndThirdPour.toFixed(2)} مل في الصبة الثالثة.</p>
+            `;
+
+            document.getElementById("pourInstructions").innerHTML = pourInstructions;
         }
     </script>
 </body>
