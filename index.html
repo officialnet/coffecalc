@@ -126,6 +126,12 @@
             </select>
         </div>
 
+        <!-- إدخال النسبة المخصصة -->
+        <div class="form-group" id="customRatioGroup" style="display:none;">
+            <label for="customRatioInput">أدخل النسبة المخصصة (ريشو):</label>
+            <input type="number" id="customRatioInput" placeholder="أدخل النسبة المخصصة">
+        </div>
+
         <!-- اختيار نوع القهوة -->
         <div class="form-group">
             <label for="type">نوع القهوة:</label>
@@ -146,14 +152,27 @@
         // تخزين المراجع لعناصر DOM
         const coffeeAmountInput = document.getElementById('coffeeAmount');
         const ratioSelect = document.getElementById('ratio');
+        const customRatioInput = document.getElementById('customRatioInput');
+        const customRatioGroup = document.getElementById('customRatioGroup');
         const typeSelect = document.getElementById('type');
         const resultElement = document.getElementById('result');
         const pourInstructionsElement = document.getElementById('pourInstructions');
 
         // إضافة مستمعي الأحداث
         coffeeAmountInput.addEventListener('input', calculate);
-        ratioSelect.addEventListener('change', calculate);
+        ratioSelect.addEventListener('change', toggleCustomRatio);
+        customRatioInput.addEventListener('input', calculate);
         typeSelect.addEventListener('change', calculate);
+
+        // إظهار أو إخفاء حقل النسبة المخصصة
+        function toggleCustomRatio() {
+            if (ratioSelect.value === 'custom') {
+                customRatioGroup.style.display = 'block';
+            } else {
+                customRatioGroup.style.display = 'none';
+                calculate(); // حساب جديد عند تغيير النسبة
+            }
+        }
 
         function calculate() {
             let coffeeAmount = parseFloat(coffeeAmountInput.value);
@@ -167,9 +186,9 @@
             }
 
             if (ratio === "custom") {
-                ratio = parseFloat(prompt("أدخل النسبة المخصصة (مثال: 15):"));
+                ratio = parseFloat(customRatioInput.value);
                 if (isNaN(ratio) || ratio <= 0) {
-                    alert("الرجاء إدخال نسبة صالحة.");
+                    resultElement.innerHTML = "<p>الرجاء إدخال نسبة مخصصة صالحة.</p>";
                     return;
                 }
             } else {
